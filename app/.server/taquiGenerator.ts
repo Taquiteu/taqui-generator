@@ -13,7 +13,7 @@ export async function taquiGenerator(text: string): Promise<Buffer> {
     const textSvg = `
     <svg width="${width}" height="110">
       <rect x="0" y="0" width="100%" height="100%" fill="white" />
-      <text x="50%" y="65%" font-size="55" fill="black" text-anchor="middle" dominant-baseline="middle" style="font-family: Arial; font-weight: 600;">
+      <text x="50%" y="65%" font-size="55" fill="black" text-anchor="middle" dominant-baseline="middle" style="font-family: Arial; font-weight: 600; font-smooth: always; text-shadow: rgba(0,0,0,.01) 0 0 1px;">
         ${text}
       </text>
     </svg>

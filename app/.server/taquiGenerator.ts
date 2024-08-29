@@ -3,9 +3,7 @@ import sharp from "sharp";
 import { fileURLToPath } from 'url';
 
 export async function taquiGenerator(text: string): Promise<Buffer> {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const inputImagePath = path.join(__dirname, 'boy.webp');
+  const inputImagePath = path.join(process.cwd(), 'public', 'assets', 'boy.webp');
         
     const image = sharp(inputImagePath);
     const { width } = await image.metadata();

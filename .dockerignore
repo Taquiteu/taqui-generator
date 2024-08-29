@@ -1,0 +1,37 @@
+# Ignorar arquivos e diretórios relacionados ao Git
+.git
+.gitignore
+
+# Logs e caches locais
+node_modules
+bun.lockb
+.pnpm
+.cache
+*.log
+
+# Arquivos de build e saída de produção
+/build
+/public/build
+/public/dist
+
+# Configurações locais de ambiente e de desenvolvimento
+.env.local
+.env.development
+.env.test
+.env.*
+
+# Arquivos de editor e sistema
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários e de backup
+tmp
+*.swp
+*.bak
+*.tmp
+
+# Ignorar outros arquivos que não são necessários para a imagem Docker
+Dockerfile*
+README.md

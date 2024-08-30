@@ -19,6 +19,9 @@ module.exports = {
     commonjs: true,
     es6: true,
   },
+  globals: {
+    Notification: "readonly"
+  },
   ignorePatterns: ["!**/.server", "!**/.client"],
 
   // Base config

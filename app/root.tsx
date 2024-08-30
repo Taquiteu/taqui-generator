@@ -7,6 +7,15 @@ import {
 } from "@remix-run/react";
 import "./tailwind.css";
 
+export function links() {
+  return [
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+    }
+  ];
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

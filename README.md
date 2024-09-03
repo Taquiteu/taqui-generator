@@ -1,40 +1,40 @@
-# Welcome to Remix!
+# Táqui Generator
 
-- 📖 [Remix docs](https://remix.run/docs)
+O **Táqui Generator** é uma aplicação web, desenvolvida com [Remix.js](https://remix.run/), que permite gerar imagens com texto personalizado no estilo "Tá Aqui", com base em uma imagem de fundo. Basta inserir o texto desejado, clicar no botão "Gerar" e copiar a imagem gerada para compartilhar com seus amigos!
 
-## Development
+## Funcionalidades
 
-Run the dev server:
+- **Inserção de Texto Personalizado**: Digite o texto que você deseja exibir na imagem.
+- **Geração de Imagem**: Clique no botão "Gerar" para criar a imagem com o texto inserido.
+- **Cópia Fácil**: Use o botão "Copiar" para copiar a imagem gerada para a área de transferência.
 
-```shellscript
-npm run dev
-```
+## Captura de Tela
 
-## Deployment
+![Táqui Generator Screenshot](./screenshot.png)
 
-First, build your app for production:
+## Como Usar
 
-```sh
-npm run build
-```
+1. Clone o repositório:
+    ```bash
+    git clone https://github.com/seuusuario/taqui-generator.git
+    cd taqui-generator
+    ```
+2. Instale as dependências usando Bun:
+    ```bash
+    bun install
+    ```
+3. Inicie o servidor de desenvolvimento:
+    ```bash
+    bun run dev
+    ```
+4. Abra o navegador e acesse `http://localhost:3000` para usar o Táqui Generator.
 
-Then run the app in production mode:
+## Contribuindo
 
-```sh
-npm start
-```
+Contribuições são bem-vindas! Para contribuir:
 
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+1. Faça um fork do repositório.
+2. Crie uma nova branch com sua feature (`git checkout -b minha-feature`).
+3. Commit suas alterações (`git commit -am 'Adicionei uma nova feature'`).
+4. Envie suas alterações para a branch (`git push origin minha-feature`).
+5. Crie um Pull Request.

@@ -44,6 +44,12 @@ export default function Index() {
     }
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleClick();
+    }
+  };
+
   return (
     <div className="flex w-full justify-center min-h-screen p-4">
       <div className="flex flex-col items-center w-full max-w-md">
@@ -56,6 +62,7 @@ export default function Index() {
           name="text"
           value={text}
           onChange={(v) => setText(v.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Digite aqui o contexto"
           required
           className="w-full p-3 text-2xl border-[3px] border-black rounded-md focus:outline-none focus:shadow-[3px_3px_0px_0px_#000000] transition-shadow duration-200"

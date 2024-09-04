@@ -1,5 +1,5 @@
-import { JsonFileLinkRepository } from "./JsonFileLinkRepository";
+import { SqliteLinkRepository } from "./SqliteLinkRepository";
 
-export function makeLinkRepository () {
-    return new JsonFileLinkRepository()
+export function makeLinkRepository() {
+    return new SqliteLinkRepository()
 }

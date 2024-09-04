@@ -5,8 +5,21 @@ import { makeLinkRepository } from "../.server/makeLinkRepository";
 import { useEffect, useState } from "react";
 
 export async function loader({ params }: LoaderFunctionArgs) {
-    const link = await makeLinkRepository().load(params.key!)
-    return link
+    if (!params.key) {
+        throw new Response("Bad Request: 'key' parameter is required.", { status: 400 });
+    }
+
+    try {
+        const link = await makeLinkRepository().load(params.key);
+
+        if (!link) {
+            throw new Response("Not Found: Link does not exist.", { status: 404 });
+        }
+
+        return link;
+    } catch (error) {
+        throw new Response("Internal Server Error: Could not load the link.", { status: 500 });
+    }
 }
 
 export default function Index() {

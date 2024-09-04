@@ -1,6 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useState } from "react";
 import useNotification from "../hooks/useNotification";
+import ReactGA from "react-ga4";
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,11 +19,14 @@ export default function Index() {
   const handleClick = () => {
     if (text && text.trim().length > 0) {
       setImageUrl(`/api/generate-image?text=${text}`)
+      ReactGA.event({ category: "Botao", action: "Clicou", label: "Gerar" });
     }
   }
 
   const copy = async () => {
     if (!imageUrl) return;
+
+    ReactGA.event({ category: "Botao", action: "Clicou", label: "Copiar" });
 
     try {
       const response = await fetch(imageUrl);

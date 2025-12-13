@@ -8,6 +8,19 @@ O **Táqui Generator** é uma aplicação web construída com **React Router (fr
 - **Geração de Imagem**: Clique no botão "Gerar" para criar a imagem com o texto inserido.
 - **Cópia Fácil**: Use o botão "Copiar" para copiar a imagem gerada para a área de transferência.
 
+## Páginas do monorepo
+
+- `/` e `/hub`: Hub central com botões para todas as frentes.
+- `/generator`: Gerador oficial de imagens Táqui.
+- `/ip`: Página que mostra seu IP público e gera a arte Táqui com ele.
+- `/link`: Encurtador simples que usa o backend existente.
+
+### Estrutura para compartilhamento
+
+- `app/components`: Componentes de layout reutilizáveis (ex: PageShell, GlassPanel).
+- `app/features/*`: Cada página isolada em sua própria pasta.
+- `app/routes/<pagina>/`: Rotas finas que carregam as features e mantêm o estilo compartilhado.
+
 ## Captura de Tela
 
 ![Táqui Generator Screenshot](./screenshot.png)

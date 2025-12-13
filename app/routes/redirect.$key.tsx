@@ -26,7 +26,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 	}
 }
 
-export default function Index() {
+export default function RedirectLink() {
 	const data = useLoaderData<Link>();
 	const [secondsRemaining, setSecondsRemaining] = useState(5);
 

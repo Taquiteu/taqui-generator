@@ -11,22 +11,39 @@ export const action = async ({ request }: Route.ActionArgs) => {
 	const originalUrl = formData.get("url");
 	const contexto = formData.get("contexto");
 
-	if (!originalUrl) {
-		return { error: "URL é obrigatória", status: 400 };
+	const urlText = typeof originalUrl === "string" ? originalUrl.trim() : "";
+	if (urlText.length === 0) {
+		return {
+			error: "Adivinhação não é comigo. Cola a URL aí antes de clicar.",
+			status: 422,
+		};
 	}
 
-	if (!contexto) {
-		return { error: "Contexto é obrigatório", status: 400 };
+	let normalizedUrl: string;
+	try {
+		const candidate = urlText.includes("://") ? urlText : `https://${urlText}`;
+		const parsedUrl = new URL(candidate);
+		if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+			return { error: "Isso aí não abre nem a porta da esperança. Cola uma URL de verdade.", status: 400 };
+		}
+		normalizedUrl = parsedUrl.toString();
+	} catch {
+		return { error: "URL inválida. Confere e tenta de novo.", status: 400 };
+	}
+
+	const contextoText = typeof contexto === "string" ? contexto.trim() : "";
+	if (contextoText.length === 0) {
+		return { error: "Se você não passar o contexto, vai acabar recebendo o contexto...", status: 423 };
 	}
 
 	const shortUrl = Math.random().toString(36).substring(2, 8); // Gerador de URL curta
 
 	const link: Link = {
 		key: shortUrl,
-		contexto: contexto.toString(),
-		url: originalUrl.toString(),
+		contexto: contextoText,
+		url: normalizedUrl,
 	};
-	makeLinkRepository().save(link);
+	await makeLinkRepository().save(link);
 
 	return { shortUrl: shortUrl };
 };

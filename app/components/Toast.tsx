@@ -9,7 +9,12 @@ import {
 	type ComponentType,
 	type ReactNode,
 } from "react";
-import { ConfettiIcon, SkullIcon, XIcon } from "@phosphor-icons/react";
+import {
+	ConfettiIcon,
+	SkullIcon,
+	HandPalmIcon,
+	XIcon,
+} from "@phosphor-icons/react";
 
 export type ToastIconComponent = ComponentType<{
 	className?: string;
@@ -30,6 +35,7 @@ export type ToastOptions = ToastPreset & {
 export const taquiToastPresets = {
 	success: { color: "#00FF55", icon: ConfettiIcon },
 	error: { color: "#FF4D4D", icon: SkullIcon },
+	warning: { color: "#FF9F29", icon: HandPalmIcon },
 } satisfies Record<string, ToastPreset>;
 
 type Toast = ToastOptions & {

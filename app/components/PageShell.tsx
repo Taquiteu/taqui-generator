@@ -35,6 +35,8 @@ export function PageShell({
 							src="/assets/taqui-a-logo.png"
 							alt="Táqui Generator"
 							className="h-auto w-[240px] max-w-full drop-shadow-[0_10px_0_rgba(0,0,0,0.35)]"
+							onClick={() => window.location.href = "/"}
+							style={{ cursor: "pointer" }}
 						/>
 					)}
 

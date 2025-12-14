@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { CopyIcon } from "@phosphor-icons/react";
 import type { MetaFunction } from "react-router";
-import { GlassPanel } from "../../components/GlassPanel";
 import { PageShell } from "../../components/PageShell";
+import useNotification from "../../hooks/useNotification";
 
 type IpState =
 	| { status: "loading" }
@@ -21,6 +22,8 @@ export const ipMeta: MetaFunction = () => {
 export function IpPage() {
 	const [ipState, setIpState] = useState<IpState>({ status: "loading" });
 	const [imageUrl, setImageUrl] = useState<string>("");
+	const [buttonText, setButtonText] = useState("Copiar");
+	const showNotification = useNotification();
 
 	const loadIp = async () => {
 		setIpState({ status: "loading" });
@@ -44,87 +47,91 @@ export function IpPage() {
 		void loadIp();
 	}, []);
 
-	const renderStatus = () => {
-		if (ipState.status === "loading") {
-			return (
-				<p className="text-sm text-white/85">
-					Descobrindo seu IP público...
-				</p>
-			);
-		}
+	const copyIp = async () => {
+		if (ipState.status !== "success") return;
 
-		if (ipState.status === "error") {
-			return (
-				<div className="flex flex-col gap-2">
-					<p className="text-sm text-white/90">{ipState.message}</p>
-					<button
-						type="button"
-						onClick={() => void loadIp()}
-						className="taqui-btn w-fit px-4 py-2 text-base"
-					>
-						Tentar de novo
-					</button>
-				</div>
-			);
+		try {
+			await navigator.clipboard.writeText(ipState.ip);
+			setButtonText("Copiado!");
+			setTimeout(() => {
+				setButtonText("Copiar");
+			}, 2000);
+			showNotification("IP copiado para o clipboard!");
+		} catch (error) {
+			console.error("Erro ao copiar o IP: ", error);
+			showNotification("Não foi possível copiar o IP.");
 		}
-
-		return (
-			<div className="flex flex-wrap items-center gap-3">
-				<p className="text-lg font-bold leading-tight">
-					Seu IP público:{" "}
-					<span className="underline">{ipState.ip}</span>
-				</p>
-				<button
-					type="button"
-					onClick={() => void loadIp()}
-					className="taqui-btn px-4 py-2 text-base"
-				>
-					Atualizar IP
-				</button>
-			</div>
-		);
 	};
+
+	const ipValue = ipState.status === "success" ? ipState.ip : "";
+	const placeholder =
+		ipState.status === "error" ? "IP indisponível" : "Descobrindo seu IP...";
+	const isLoading = ipState.status === "loading";
+	const hasError = ipState.status === "error";
+	const buttonLabel = hasError ? "Recarregar" : buttonText;
+	const canCopy = ipState.status === "success";
 
 	return (
 		<PageShell
-			title="Meu IP em texto e imagem"
-			description="Esta página busca seu IP público e gera a arte “Tá aqui” com o número do seu IP."
+			showLogo
+			containerClassName="max-w-[1200px] gap-12"
 		>
-			<div className="grid w-full gap-6 lg:grid-cols-2">
-				<GlassPanel tone="strong" className="flex flex-col gap-4">
-					<div>
-						<h2 className="taqui-heading text-lg font-bold leading-tight">
-							IP detectado automaticamente
-						</h2>
-						{renderStatus()}
-					</div>
-				</GlassPanel>
+			<div className="flex w-full flex-col items-center">
+				<div className="flex w-full max-w-[540px] flex-col gap-6 sm:flex-row sm:items-start">
+					<label htmlFor="taqui-ip" className="sr-only">
+						Seu IP público
+					</label>
+					<input
+						id="taqui-ip"
+						type="text"
+						value={ipValue}
+						readOnly
+						placeholder={placeholder}
+						className="h-[60px] w-full flex-1 rounded-lg border-[3px] border-black bg-white p-4 font-mono text-2xl leading-7 text-black placeholder:text-[#B1B1B1] focus:outline-none"
+					/>
 
-				<GlassPanel tone="soft" className="flex flex-col gap-4">
-					<div className="flex items-center justify-between gap-2">
-						<h2 className="taqui-heading text-lg font-bold leading-tight">
-							Imagem com seu IP
-						</h2>
-						<span className="rounded-full border border-white/60 bg-white/15 px-3 py-1 text-xs font-bold uppercase text-white/90">
-							Gerado automaticamente
-						</span>
-					</div>
-					<div className="overflow-hidden rounded-2xl border-[3px] border-black bg-white">
-						{imageUrl ? (
+					<button
+						type="button"
+						disabled={isLoading}
+						onClick={() => {
+							if (hasError) {
+								void loadIp();
+								return;
+							}
+
+							void copyIp();
+						}}
+						className="flex h-[60px] w-full items-center justify-center gap-2 rounded-lg border-[3px] border-black bg-[#FFF129] px-[14px] py-3 font-mono text-2xl font-bold leading-9 text-black disabled:cursor-not-allowed disabled:opacity-60 sm:w-[151px]"
+					>
+						{canCopy && buttonText === "Copiar" && (
+							<CopyIcon className="h-7 w-7" weight="bold" />
+						)}
+						{buttonLabel}
+					</button>
+				</div>
+
+				{imageUrl && (
+					<div className="mt-10 w-full max-w-[540px] overflow-hidden rounded-lg border-[3px] border-black bg-white">
+						<div className="flex h-[61px] items-center justify-center px-[27px]">
+							<p className="w-full truncate text-center font-['Roboto_Flex'] text-xl font-bold leading-tight text-black sm:text-2xl md:text-[32px] md:leading-[38px]">
+								{ipValue}
+							</p>
+						</div>
+						<div className="w-full aspect-[720/564]">
 							<img
 								src={imageUrl}
 								alt="Imagem com IP"
-								className="h-full w-full max-h-80 object-contain"
+								className="h-full w-full object-cover object-bottom"
 							/>
-						) : (
-							<div className="flex h-72 items-center justify-center bg-white/60 text-center text-sm font-semibold text-gray-800">
-								{ipState.status === "loading"
-									? "Gerando imagem com seu IP..."
-									: "Imagem não disponível no momento."}
-							</div>
-						)}
+						</div>
 					</div>
-				</GlassPanel>
+				)}
+
+				{hasError && (
+					<p className="mt-4 max-w-[540px] text-left text-sm text-white/90">
+						{ipState.message}
+					</p>
+				)}
 			</div>
 		</PageShell>
 	);

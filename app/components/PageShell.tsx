@@ -7,6 +7,7 @@ type PageShellProps = {
 	align?: "center" | "start";
 	showLogo?: boolean;
 	actions?: ReactNode;
+	containerClassName?: string;
 };
 
 export function PageShell({
@@ -16,6 +17,7 @@ export function PageShell({
 	align = "center",
 	showLogo = true,
 	actions,
+	containerClassName = "",
 }: PageShellProps) {
 	const alignment =
 		align === "start" ? "items-start text-left" : "items-center text-center";
@@ -25,7 +27,7 @@ export function PageShell({
 			<div className="pointer-events-none absolute left-1/2 top-1/2 h-[140vmax] w-[140vmax] -translate-x-1/2 -translate-y-1/2 scale-150 origin-[48%_52%] bg-[url('/assets/taqui-o-background.png')] bg-cover bg-center opacity-100 will-change-transform animate-spin-slower" />
 
 			<div
-				className={`relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-6 text-white ${alignment}`}
+				className={`relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-6 text-white ${alignment} ${containerClassName}`}
 			>
 				<div className={`flex flex-col gap-4 ${alignment}`}>
 					{showLogo && (

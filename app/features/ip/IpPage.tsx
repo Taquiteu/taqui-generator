@@ -3,6 +3,7 @@ import { CopyIcon } from "@phosphor-icons/react";
 import type { MetaFunction } from "react-router";
 import { PageShell } from "../../components/PageShell";
 import useNotification from "../../hooks/useNotification";
+import { taquiToastPresets, useToast } from "../../components/Toast";
 
 type IpState =
 	| { status: "loading" }
@@ -24,6 +25,7 @@ export function IpPage() {
 	const [imageUrl, setImageUrl] = useState<string>("");
 	const [buttonText, setButtonText] = useState("Copiar");
 	const showNotification = useNotification();
+	const toast = useToast();
 
 	const loadIp = async () => {
 		setIpState({ status: "loading" });
@@ -53,6 +55,11 @@ export function IpPage() {
 		try {
 			await navigator.clipboard.writeText(ipState.ip);
 			setButtonText("Copiado!");
+			toast({
+				...taquiToastPresets.success,
+				title: "TÁQUI!",
+				message: "Tá na mão o endereço do seu barraco na internet. Cuidado onde cola.",
+			});
 			setTimeout(() => {
 				setButtonText("Copiar");
 			}, 2000);

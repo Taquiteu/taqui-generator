@@ -4,3 +4,5 @@ node_modules
 .env
 /.react-router/
 /build/
+links.db
+links.json

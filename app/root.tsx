@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import appStylesHref from "./app.css?url";
+import { ToastProvider } from "./components/Toast";
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "stylesheet", href: appStylesHref },
@@ -22,6 +23,14 @@ export const links: Route.LinksFunction = () => [
 		rel: "stylesheet",
 		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
 	},
+	{
+		rel: "stylesheet",
+		href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap",
+	},
+	{
+		rel: "stylesheet",
+		href: "https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,700&display=swap",
+	},
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -34,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				{children}
+				<ToastProvider>{children}</ToastProvider>
 				<ScrollRestoration />
 				<Scripts />
 			</body>

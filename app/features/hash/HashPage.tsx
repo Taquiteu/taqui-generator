@@ -77,13 +77,7 @@ export function HashPage() {
 	};
 
 	return (
-		<PageShell
-			showLogo
-			align="start"
-			containerClassName="max-w-[720px] gap-8"
-			title="Táqui o UUID"
-			description="Um gerador focado: só UUID v4 quentinho, com botão de copiar e um mini histórico."
-		>
+		<PageShell showLogo align="center" containerClassName="max-w-[720px] gap-8">
 			<section className="flex w-full flex-col gap-4 rounded-xl border-2 border-black bg-white p-5 text-black shadow-[4px_4px_0_#000000] sm:p-6">
 				<header className="flex flex-col gap-2 font-mono">
 					<div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.08em] text-black/70">

@@ -658,7 +658,7 @@ export function RoletaPage() {
 
 	return (
 		<PageShell showLogo containerClassName="max-w-[1200px] gap-12">
-			<div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16">
+			<div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-start lg:justify-center lg:gap-16">
 				<div className="relative flex shrink-0 items-center justify-center">
 					<div className="relative h-[360px] w-[360px] sm:h-[520px] sm:w-[520px]">
 						<div className="absolute inset-0 rounded-full border-[2px] border-black bg-white shadow-[4px_4px_0_#000000]" />

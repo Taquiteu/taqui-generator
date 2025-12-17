@@ -19,15 +19,15 @@ type WheelOption = {
 type WheelPhase =
 	| { kind: "idle" }
 	| {
-			kind: "spin";
-			startTime: number;
-			startAngle: number;
-			totalDelta: number;
-			winnerIndex: number;
-			accelDurationMs: number;
-			totalDurationMs: number;
-			accelPortion: number;
-	  }
+		kind: "spin";
+		startTime: number;
+		startAngle: number;
+		totalDelta: number;
+		winnerIndex: number;
+		accelDurationMs: number;
+		totalDurationMs: number;
+		accelPortion: number;
+	}
 	| { kind: "stopped"; winnerIndex: number };
 
 const IDLE_ROTATION_SECONDS = 24;
@@ -259,6 +259,7 @@ export function RoletaPage() {
 	const sfxRef = useRef<SfxEngine | null>(null);
 
 	const wheelRef = useRef<HTMLDivElement | null>(null);
+	const dotsRef = useRef<HTMLDivElement | null>(null);
 	const wheelAngleRef = useRef<number>(123);
 	const rafRef = useRef<number | null>(null);
 	const lastFrameTimeRef = useRef<number | null>(null);
@@ -487,7 +488,11 @@ export function RoletaPage() {
 				}
 			}
 
-			wheel.style.transform = `rotate(${wheelAngleRef.current}deg)`;
+			const rotation = `rotate(${wheelAngleRef.current}deg)`;
+			wheel.style.transform = rotation;
+			if (dotsRef.current) {
+				dotsRef.current.style.transform = rotation;
+			}
 			rafRef.current = requestAnimationFrame(frame);
 		};
 
@@ -510,12 +515,12 @@ export function RoletaPage() {
 			<div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16">
 				<div className="relative flex shrink-0 items-center justify-center">
 					<div className="relative h-[360px] w-[360px] sm:h-[520px] sm:w-[520px]">
-						<div className="absolute inset-0 rounded-full border-[4px] border-black bg-white shadow-[4px_4px_0_#000000]" />
+						<div className="absolute inset-0 rounded-full border-[2px] border-black bg-white shadow-[4px_4px_0_#000000]" />
 
-						<div className="absolute inset-[16px] overflow-hidden rounded-full border-[4px] border-black bg-white">
+						<div className="absolute inset-[16px] overflow-hidden rounded-full border-[1px] border-black bg-white shadow-[1px_1px_0_#000000]">
 							<div
 								ref={wheelRef}
-								className="absolute inset-0 will-change-transform [--taqui-label-distance:-108px] sm:[--taqui-label-distance:-172px]"
+								className="absolute inset-0 will-change-transform [--taqui-label-distance:-90px] sm:[--taqui-label-distance:-110px]"
 								style={{ transform: `rotate(${wheelAngleRef.current}deg)` }}
 							>
 								<svg
@@ -529,7 +534,7 @@ export function RoletaPage() {
 											d={slice.path}
 											fill={slice.fill}
 											stroke="#000000"
-											strokeWidth="3"
+											strokeWidth="1"
 										/>
 									))}
 								</svg>
@@ -540,9 +545,9 @@ export function RoletaPage() {
 									return (
 										<div
 											key={option.id}
-											className="absolute left-1/2 top-1/2 w-[150px] text-center font-mono text-sm font-bold leading-4 text-black sm:w-[170px] sm:text-base"
+											className="absolute left-1/2 top-1/2 w-[150px] text-center font-mono text-sm font-bold leading-8 text-black sm:w-[170px] sm:text-2xl"
 											style={{
-												transform: `translate(-50%, -50%) rotate(${rotation}deg) translateY(var(--taqui-label-distance))`,
+												transform: `translate(-50%, -50%) rotate(${rotation}deg) translateY(var(--taqui-label-distance)) rotate(-90deg)`,
 											}}
 										>
 											<span className="block select-none truncate px-1">
@@ -552,33 +557,48 @@ export function RoletaPage() {
 									);
 								})}
 
-								<div className="absolute left-1/2 top-1/2 flex h-[72px] w-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[4px] border-black bg-white shadow-[2px_2px_0_#000000]">
+								<div className="absolute left-1/2 top-1/2 flex h-[72px] w-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[1px] border-black bg-white shadow-[2px_2px_0_#000000]">
 									<ArrowClockwiseIcon className="h-8 w-8 text-black" weight="bold" />
 								</div>
 							</div>
 						</div>
 
 						<div className="absolute inset-0 hidden sm:block" aria-hidden="true">
-							{Array.from({ length: Math.max(options.length, 1) }, (_, index) => {
-								const sliceAngle = 360 / Math.max(options.length, 1);
-								const angle = index * sliceAngle;
-								return (
-									<div
-										key={`dot_${angle}`}
-										className="absolute left-1/2 top-1/2 h-3 w-3 rounded-full border-2 border-black bg-white shadow-[2px_2px_0_#000000]"
-										style={{
-											transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-244px)`,
-										}}
-									/>
-								);
-							})}
+							<div
+								ref={dotsRef}
+								className="absolute inset-0 will-change-transform"
+								style={{ transform: `rotate(${wheelAngleRef.current}deg)` }}
+							>
+								{Array.from({ length: Math.max(options.length, 1) }, (_, index) => {
+									const sliceAngle = 360 / Math.max(options.length, 1);
+									const angle = index * sliceAngle;
+									return (
+										<div
+											key={`dot_${angle}`}
+											className="absolute left-1/2 top-1/2 h-3 w-3 rounded-full border-1 border-black bg-white shadow-[3px_2px_0_#000000]"
+											style={{
+												transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-244px)`,
+											}}
+										/>
+									);
+								})}
+							</div>
 						</div>
 
-						<div className="absolute -right-10 top-1/2 -translate-y-1/2 sm:-right-12">
-							<div className="relative">
-								<div className="h-0 w-0 border-y-[30px] border-y-transparent border-r-[52px] border-r-black" />
-								<div className="absolute left-[4px] top-[4px] h-0 w-0 border-y-[26px] border-y-transparent border-r-[46px] border-r-[#FF4D4D]" />
-							</div>
+						<div className="pointer-events-none absolute top-1/2 right-[-68px] z-20 -translate-y-1/2 translate-y-[-40px] sm:right-[-98px]">
+							<svg
+								viewBox="0 0 100 120"
+								className="h-[96px] w-[80px] -rotate-90 drop-shadow-[-3px_3px_0_#000000] sm:h-[90px] sm:w-[180px]"
+								aria-hidden="true"
+							>
+								<polygon
+									points="50,0 100,120 0,120"
+									fill="#FF4D4D"
+									stroke="#000000"
+									strokeWidth="2"
+									strokeLinejoin="round"
+								/>
+							</svg>
 						</div>
 					</div>
 				</div>
@@ -592,8 +612,8 @@ export function RoletaPage() {
 							onKeyDown={(event) => {
 								if (event.key === "Enter") addOption();
 							}}
-							placeholder="Lorem ipsum dolor"
-							className="h-[58px] w-full flex-1 rounded-lg border-[3px] border-black bg-white px-4 text-lg font-bold leading-6 shadow-[2px_2px_0_#000000] placeholder:text-black/40 focus:outline-none"
+							placeholder="Adicionar nova opção..."
+							className="h-[58px] w-full flex-1 rounded-lg border-[2px] border-black bg-white px-4 text-lg font-bold leading-6 shadow-[2px_2px_0_#000000] placeholder:text-black/40 focus:outline-none"
 						/>
 
 						<button
@@ -668,11 +688,10 @@ export function RoletaPage() {
 											ref={(node) => {
 												listItemRefs.current.set(option.id, node);
 											}}
-											className={`flex items-center justify-between gap-4 border-b-2 border-black px-4 py-3 ${
-												isHighlighted ? "bg-[#FFF129]" : "bg-white"
-											} ${isWinner ? "animate-pulse" : ""}`}
+											className={`flex items-center justify-between gap-4 border-b-2 border-black px-4 py-3 ${isHighlighted ? "bg-[#FFF129]" : "bg-white"
+												} ${isWinner ? "animate-pulse" : ""}`}
 										>
-											<p className="min-w-0 flex-1 truncate text-base font-bold leading-6">
+											<p className="min-w-0 flex-1 truncate text-base font-bold leading-6 text-xl">
 												{option.label}
 											</p>
 

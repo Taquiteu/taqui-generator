@@ -36,6 +36,7 @@ RUN apt-get update \
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/config ./config
 COPY package.json ./
 
 EXPOSE 3000

@@ -12,3 +12,4 @@ figma*
 config/geladeira.json
 data/geladeira/
 data/geladeira/**
+docker-compose.yml

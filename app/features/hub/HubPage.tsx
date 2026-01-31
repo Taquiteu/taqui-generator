@@ -13,6 +13,7 @@ import {
 	TextAaIcon,
 	SnowflakeIcon,
 	UsersThreeIcon,
+	DiceSixIcon,
 } from "@phosphor-icons/react";
 import type { MetaFunction } from "react-router";
 import { PageShell } from "../../components/PageShell";
@@ -34,7 +35,8 @@ type HubCardProps = {
 	| "roleta"
 	| "textao"
 	| "geladeira"
-	| "contas";
+	| "contas"
+	| "apostas";
 };
 
 type HubStatProps = {
@@ -123,6 +125,14 @@ const hubCards: HubCardProps[] = [
 		href: "/geladeira",
 		badge: "Beta",
 		icon: "geladeira",
+	},
+	{
+		title: "Táqui Apostas",
+		description:
+			"Crie pools, defina regras e descubra quem chegou mais perto do resultado.",
+		href: "/apostas",
+		badge: "Novo",
+		icon: "apostas",
 	},
 	{
 		title: "Táqui Contas",
@@ -221,6 +231,8 @@ function HubCardIcon({ kind }: { kind: HubCardProps["icon"] }) {
 			return <SnowflakeIcon className={className} />;
 		case "contas":
 			return <UsersThreeIcon className={className} />;
+		case "apostas":
+			return <DiceSixIcon className={className} />;
 		default:
 			return null;
 	}

@@ -13,4 +13,6 @@ config/geladeira.json
 config/accounts.json
 data/geladeira/
 data/geladeira/**
+data/apostas/
+data/apostas/**
 docker-compose.yml

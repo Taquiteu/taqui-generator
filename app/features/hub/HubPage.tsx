@@ -12,6 +12,7 @@ import {
 	ArrowsClockwiseIcon,
 	TextAaIcon,
 	SnowflakeIcon,
+	UsersThreeIcon,
 } from "@phosphor-icons/react";
 import type { MetaFunction } from "react-router";
 import { PageShell } from "../../components/PageShell";
@@ -32,7 +33,8 @@ type HubCardProps = {
 	| "hash"
 	| "roleta"
 	| "textao"
-	| "geladeira";
+	| "geladeira"
+	| "contas";
 };
 
 type HubStatProps = {
@@ -122,6 +124,14 @@ const hubCards: HubCardProps[] = [
 		badge: "Beta",
 		icon: "geladeira",
 	},
+	{
+		title: "Táqui Contas",
+		description:
+			"Crie e administre usuários para apps privados como a Geladeira Shop.",
+		href: "/contas/admin",
+		badge: "Novo",
+		icon: "contas",
+	},
 ];
 
 export const hubMeta: MetaFunction = () => {
@@ -209,6 +219,8 @@ function HubCardIcon({ kind }: { kind: HubCardProps["icon"] }) {
 			return <TextAaIcon className={className} />;
 		case "geladeira":
 			return <SnowflakeIcon className={className} />;
+		case "contas":
+			return <UsersThreeIcon className={className} />;
 		default:
 			return null;
 	}

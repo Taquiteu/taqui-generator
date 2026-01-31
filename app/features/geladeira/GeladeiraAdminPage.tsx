@@ -73,6 +73,7 @@ export function GeladeiraAdminPage() {
 		if (!actionData) return;
 		if (actionData.ok) {
 			setEditingItem(null)
+			setIsEditModalOpen(false)
 			toast({
 				...taquiToastPresets.success,
 				title: "TÁQUI!",

@@ -1,0 +1,17 @@
+{
+  "users": [
+    {
+      "id": "admin",
+      "displayName": "Admin",
+      "username": "admin",
+      "password": "123456789",
+      "roles": ["admin"],
+      "apps": {
+        "geladeira": {
+          "pixKey": "chave-pix-admin",
+          "fridgeIds": ["1", "2"]
+        }
+      }
+    }
+  ]
+}

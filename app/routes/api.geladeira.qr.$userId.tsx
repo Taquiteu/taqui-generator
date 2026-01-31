@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "react-router";
-import { findGeladeiraUserById } from "../.server/geladeiraConfig";
+import { findAccountById, getGeladeiraAccess } from "../.server/accounts";
 import { findPixQrForUser, readPixQrBytes } from "../.server/geladeiraPixQr";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -8,8 +8,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		return new Response("Missing userId", { status: 400 });
 	}
 
-	const user = findGeladeiraUserById(userId);
-	if (!user) {
+	const user = findAccountById(userId);
+	if (!user || !getGeladeiraAccess(user)) {
 		return new Response("User not found", { status: 404 });
 	}
 

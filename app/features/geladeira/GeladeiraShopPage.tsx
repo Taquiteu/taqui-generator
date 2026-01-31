@@ -82,8 +82,17 @@ export function GeladeiraShopPage() {
 		if (!selectedItem) return;
 		try {
 			await navigator.clipboard.writeText(selectedItem.ownerPixKey);
+			toast({
+				...taquiToastPresets.success,
+				title: "TÁQUI!",
+				message: "Chave Pix copiada.",
+			});
 		} catch {
-			// ignore
+			toast({
+				...taquiToastPresets.error,
+				title: "DEU RUIM!",
+				message: "Não foi possível copiar a chave.",
+			});
 		}
 	};
 
@@ -149,7 +158,9 @@ export function GeladeiraShopPage() {
 								</>
 							) : (
 								<Link
-									to={`/geladeira/admin?fridge=${encodeURIComponent(data.selectedFridgeId)}`}
+									to={`/contas/login?redirectTo=${encodeURIComponent(
+										`/geladeira/admin?fridge=${data.selectedFridgeId}`,
+									)}`}
 									className="flex h-11 items-center justify-center gap-2 rounded-lg border-2 border-black bg-white px-4 font-bold shadow-[2px_2px_0_#000000] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px]"
 								>
 									<LockOpenIcon className="h-5 w-5" weight="bold" />

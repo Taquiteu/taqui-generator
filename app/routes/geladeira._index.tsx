@@ -1,13 +1,11 @@
 import { redirect, type MetaFunction } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { GeladeiraShopPage } from "../features/geladeira/GeladeiraShopPage";
+import { getGeladeiraAccess, loadAccounts } from "../.server/accounts";
 import { loadGeladeiraConfig } from "../.server/geladeiraConfig";
 import { listItemsByFridge, upsertFridges } from "../.server/geladeiraDb";
 import { getPixQrCacheKeyForUser, hasPixQrForUser } from "../.server/geladeiraPixQr";
-import {
-	destroyGeladeiraSession,
-	getGeladeiraSession,
-} from "../.server/geladeiraSession";
+import { destroyAuthSession, getAuthSession } from "../.server/authSession";
 import { getItemById, withdrawOne } from "../.server/geladeiraDb";
 
 export const meta: MetaFunction = () => [
@@ -29,20 +27,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			? fridgeParam
 			: config.fridges[0]?.id) ?? "principal";
 
-	const userMap = new Map(
-		config.users.map((user) => [
-			user.id,
-			{
-				id: user.id,
-				displayName: user.displayName,
-				pixKey: user.pixKey,
-				hasPixQr: hasPixQrForUser(user.id),
-				pixQrVersion: getPixQrCacheKeyForUser(user.id),
-			},
-		]),
-	);
+	const accounts = loadAccounts();
+	const userEntries = accounts.users.flatMap((user) => {
+		const access = getGeladeiraAccess(user);
+		if (!access) return [];
+		return [
+			[
+				user.id,
+				{
+					id: user.id,
+					displayName: user.displayName,
+					pixKey: access.pixKey,
+					hasPixQr: hasPixQrForUser(user.id),
+					pixQrVersion: getPixQrCacheKeyForUser(user.id),
+				},
+			] as const,
+		];
+	});
+	const userMap = new Map(userEntries);
 
-	const session = await getGeladeiraSession(request);
+	const session = await getAuthSession(request);
 	const userId = session.get("userId");
 	const sessionUser =
 		typeof userId === "string" ? (userMap.get(userId) ?? null) : null;
@@ -79,9 +83,9 @@ export async function action({ request }: ActionFunctionArgs) {
 	const intent = formData.get("intent");
 
 	if (intent === "logout") {
-		const session = await getGeladeiraSession(request);
+		const session = await getAuthSession(request);
 		return redirect("/geladeira", {
-			headers: { "Set-Cookie": await destroyGeladeiraSession(session) },
+			headers: { "Set-Cookie": await destroyAuthSession(session) },
 		});
 	}
 

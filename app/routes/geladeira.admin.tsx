@@ -3,7 +3,8 @@ import { unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { redirect, type MetaFunction } from "react-router";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { findGeladeiraUserById, loadGeladeiraConfig } from "../.server/geladeiraConfig";
+import { findAccountById, getGeladeiraAccess } from "../.server/accounts";
+import { loadGeladeiraConfig } from "../.server/geladeiraConfig";
 import {
 	deleteItem,
 	getItemById,
@@ -19,10 +20,10 @@ import {
 	savePixQrForUser,
 } from "../.server/geladeiraPixQr";
 import {
-	destroyGeladeiraSession,
-	getGeladeiraSession,
-	requireGeladeiraUserId,
-} from "../.server/geladeiraSession";
+	destroyAuthSession,
+	getAuthSession,
+	requireAuthUserId,
+} from "../.server/authSession";
 import { GeladeiraAdminPage } from "../features/geladeira/GeladeiraAdminPage";
 
 export const meta: MetaFunction = () => [{ title: "Táqui Tua Geladeira - Admin" }];
@@ -59,19 +60,31 @@ function newId(prefix: string) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireGeladeiraUserId(request);
+	const userId = await requireAuthUserId(request);
 	const config = loadGeladeiraConfig();
 	upsertFridges(config.fridges);
 
-	const user = findGeladeiraUserById(userId);
-	if (!user) throw redirect("/geladeira");
+	const user = findAccountById(userId);
+	if (!user) {
+		const session = await getAuthSession(request);
+		throw redirect("/contas/login", {
+			headers: { "Set-Cookie": await destroyAuthSession(session) },
+		});
+	}
+
+	const geladeiraAccess = getGeladeiraAccess(user);
+	if (!geladeiraAccess) {
+		const url = new URL(request.url);
+		const returnTo = `${url.pathname}${url.search}`;
+		throw redirect(`/contas/login?redirectTo=${encodeURIComponent(returnTo)}`);
+	}
 
 	const allowedFridges = config.fridges.filter((fridge) =>
-		user.fridgeIds.includes(fridge.id),
+		geladeiraAccess.fridgeIds.includes(fridge.id),
 	);
 	if (allowedFridges.length === 0) {
 		throw new Error(
-			`Usuário "${user.id}" não tem acesso a nenhuma geladeira. Verifique "users[].fridgeIds" no config.`,
+			`Usuário "${user.id}" não tem acesso a nenhuma geladeira. Verifique o cadastro de contas.`,
 		);
 	}
 	const url = new URL(request.url);
@@ -94,7 +107,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		user: {
 			id: user.id,
 			displayName: user.displayName,
-			pixKey: user.pixKey,
+			pixKey: geladeiraAccess.pixKey,
 			hasPixQr: hasPixQrForUser(user.id),
 			pixQrVersion: getPixQrCacheKeyForUser(user.id),
 		},
@@ -105,17 +118,24 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireGeladeiraUserId(request);
-	const user = findGeladeiraUserById(userId);
-	if (!user) return redirect("/geladeira");
+	const userId = await requireAuthUserId(request);
+	const user = findAccountById(userId);
+	if (!user) return redirect("/contas/login");
+
+	const geladeiraAccess = getGeladeiraAccess(user);
+	if (!geladeiraAccess) {
+		const url = new URL(request.url);
+		const returnTo = `${url.pathname}${url.search}`;
+		return redirect(`/contas/login?redirectTo=${encodeURIComponent(returnTo)}`);
+	}
 
 	const formData = await request.formData();
 	const intent = formData.get("intent");
 
 	if (intent === "logout") {
-		const session = await getGeladeiraSession(request);
+		const session = await getAuthSession(request);
 		return redirect("/geladeira", {
-			headers: { "Set-Cookie": await destroyGeladeiraSession(session) },
+			headers: { "Set-Cookie": await destroyAuthSession(session) },
 		});
 	}
 
@@ -142,7 +162,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	if (intent === "add") {
 		const fridgeId = formData.get("fridgeId");
-		if (typeof fridgeId !== "string" || !user.fridgeIds.includes(fridgeId)) {
+		if (typeof fridgeId !== "string" || !geladeiraAccess.fridgeIds.includes(fridgeId)) {
 			return { ok: false, error: "Geladeira inválida." } as const;
 		}
 

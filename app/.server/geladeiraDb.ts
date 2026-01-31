@@ -53,7 +53,7 @@ function normalizeStore(raw: any): GeladeiraStore {
 	const events = Array.isArray(raw?.events) ? raw.events : [];
 	let nextEventId = Number(raw?.nextEventId);
 	if (!Number.isFinite(nextEventId) || nextEventId <= 0) {
-		const maxId = events.reduce((max, event) => {
+		const maxId = events.reduce((max: number, event: { id: any; }) => {
 			const id = Number(event?.id ?? 0);
 			return id > max ? id : max;
 		}, 0);
